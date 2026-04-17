@@ -25,18 +25,14 @@ html{scroll-behavior:smooth;}
 }
 
 html,body{
-  height:auto;min-height:100%;background:var(--black);
+  height:auto;min-height:100%;background:var(--app);
   font-family:'DM Sans',sans-serif;color:var(--white);
   -webkit-text-size-adjust:100%;overflow-x:hidden;
-  overflow-y:auto;
+  overflow-y:auto;margin:0;padding:0;
 }
 #app{
-  background:var(--app);width:100%;max-width:1200px;margin:0 auto;
+  background:var(--app);width:100%;
   display:flex;flex-direction:column;
-}
-/* Constrain chat content width on wide screens */
-.chat-inner{
-  width:100%;max-width:720px;margin:0 auto;
 }
 
 /* ── WELCOME ── */
@@ -44,6 +40,7 @@ html,body{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:100px 36px 120px;flex:1;
   position:relative;overflow:hidden;
+  min-height:600px;
 }
 .screen-welcome::before{
   content:'';position:absolute;inset:0;
@@ -67,11 +64,14 @@ html,body{
 .progress-wrap{height:1px;background:var(--border);flex-shrink:0;position:sticky;top:0;z-index:10;}
 .progress-fill{height:1px;background:var(--gold);transition:width 0.55s cubic-bezier(0.4,0,0.2,1);}
 
+/* Content max-width wrapper for wide screens */
+.content-wrap{width:100%;max-width:760px;margin:0 auto;}
+
 /* ── CHAT HEADER ── */
 .chat-header{
   padding:16px 22px 14px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;gap:12px;flex-shrink:0;
-  background:var(--app);position:sticky;top:1px;z-index:9;
+  background:var(--app);
 }
 .avatar{width:28px;height:28px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .avatar-dot{width:9px;height:9px;background:var(--gold);border-radius:50%;}
@@ -689,9 +689,11 @@ function screenChat(){
   }
   return`
     <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="content-wrap">
     <div class="chat-header"><div class="avatar"><div class="avatar-dot"></div></div><span class="chat-name">AI Time Audit</span><span class="prog-label">${prog} of ${TOTAL_Q}</span></div>
     <div id="msgs" class="messages">${historyHTML}${typingHTML}</div>
-    ${panel}`;}
+    ${panel}
+    </div>`;}
 
 /* ── RANK PANEL ── */
 function buildRankPanel(q){
@@ -725,7 +727,7 @@ function submitRank(){
 /* ── LOADING ── */
 function screenLoading(){
   const h=msgs.map(m=>m.role==='bot'?`<div class="msg-bot"><div class="bot-icon"><div class="bot-dot"></div></div><div class="bot-bbl">${m.content}</div></div>`:`<div class="msg-user"><div class="user-bbl">${m.content}</div></div>`).join('');
-  return`<div class="progress-wrap"><div class="progress-fill" style="width:100%"></div></div><div class="chat-header"><div class="avatar"><div class="avatar-dot"></div></div><span class="chat-name">AI Time Audit</span><span class="prog-label">8 of 8</span></div><div id="msgs" class="messages">${h}</div><div class="loading-zone"><div class="loading-top"><span class="loading-dot"></span><span class="loading-text">Pulling your personalized recommendations together...</span></div><div class="loading-bar-bg"><div class="loading-bar-animate"></div></div><p class="loading-note">This usually takes about 30 to 45 seconds. Worth the wait.</p></div>`;}
+  return`<div class="progress-wrap"><div class="progress-fill" style="width:100%"></div></div><div class="content-wrap"><div class="chat-header"><div class="avatar"><div class="avatar-dot"></div></div><span class="chat-name">AI Time Audit</span><span class="prog-label">8 of 8</span></div><div id="msgs" class="messages">${h}</div><div class="loading-zone"><div class="loading-top"><span class="loading-dot"></span><span class="loading-text">Pulling your personalized recommendations together...</span></div><div class="loading-bar-bg"><div class="loading-bar-animate"></div></div><p class="loading-note">This usually takes about 30 to 45 seconds. Worth the wait.</p></div></div>`;}
 
 /* ── RESULTS ── */
 function screenResults(){
@@ -847,13 +849,13 @@ render();
 
 // Tell parent iframe to resize — works with Squarespace embed blocks
 function reportHeight(){
-  const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  const h = document.getElementById('app')?.offsetHeight || document.body.offsetHeight;
   window.parent.postMessage({type:'resize',height:h},'*');
 }
 const resizeObs = new ResizeObserver(()=>reportHeight());
-resizeObs.observe(document.body);
+resizeObs.observe(document.getElementById('app')||document.body);
 reportHeight();
-setInterval(reportHeight, 500);
+setInterval(reportHeight,500);
 
 async function ejsSend(templateId, params){
   const res = await fetch('https://api.emailjs.com/api/v1.0/email/send',{
