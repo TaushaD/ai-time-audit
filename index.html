@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,15 +31,18 @@ html,body{
   overflow-y:auto;
 }
 #app{
-  background:var(--app);width:100%;max-width:760px;margin:0 auto;
-  min-height:100vh;display:flex;flex-direction:column;
-  border-left:1px solid var(--border);border-right:1px solid var(--border);
+  background:var(--app);width:100%;max-width:1200px;margin:0 auto;
+  display:flex;flex-direction:column;
+}
+/* Constrain chat content width on wide screens */
+.chat-inner{
+  width:100%;max-width:720px;margin:0 auto;
 }
 
 /* ── WELCOME ── */
 .screen-welcome{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:80px 36px 100px;min-height:100vh;flex:1;
+  text-align:center;padding:100px 36px 120px;flex:1;
   position:relative;overflow:hidden;
 }
 .screen-welcome::before{
@@ -255,7 +258,7 @@ textarea:focus{border-color:var(--gold);}
 /* ── GATE SCREEN ── */
 .screen-gate{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100vh;flex:1;padding:60px 36px 80px;text-align:center;
+  flex:1;padding:80px 36px 100px;text-align:center;
   position:relative;overflow:hidden;
 }
 .screen-gate::before{
@@ -332,8 +335,8 @@ textarea:focus{border-color:var(--gold);}
 /* ── EMAILJS CONFIG ── swap these in once you have them from emailjs.com ── */
 const EMAILJS_PUBLIC_KEY             = 'ofaFUp6rIIXy_haFM';
 const EMAILJS_SERVICE_ID             = 'service_87bzt1g';
-const EMAILJS_TEMPLATE_TAUSHA        = 'template_b7aq29i';
-const EMAILJS_TEMPLATE_PHOTOGRAPHER  = 'template_k0cd5vk';
+const EMAILJS_TEMPLATE_TAUSHA        = 'b7aq29i';
+const EMAILJS_TEMPLATE_PHOTOGRAPHER  = 'k0cd5vk';
 
 /* ── STATE ── */
 const TOTAL_Q = 8;
@@ -844,13 +847,13 @@ render();
 
 // Tell parent iframe to resize — works with Squarespace embed blocks
 function reportHeight(){
-  const h = document.body.scrollHeight;
+  const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
   window.parent.postMessage({type:'resize',height:h},'*');
 }
-// Report on load and whenever content changes
 const resizeObs = new ResizeObserver(()=>reportHeight());
 resizeObs.observe(document.body);
 reportHeight();
+setInterval(reportHeight, 500);
 
 async function ejsSend(templateId, params){
   const res = await fetch('https://api.emailjs.com/api/v1.0/email/send',{
