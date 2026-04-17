@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The AI Time Audit | Tausha Dickinson Photography</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.16/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.16/400-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.0.16/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.20/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.20/500.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+html{scroll-behavior:smooth;}
+
+:root{
+  --black:#000000;--app:#0d0d0d;--card:#141414;--bubble:#1a1a1a;--user-bubble:#222222;
+  --border:#262626;--border-mid:#2e2e2e;--white:#ffffff;
+  --text-dim:rgba(255,255,255,0.52);--text-body:rgba(255,255,255,0.85);
+  --gold:#c9a96e;--gold-bright:#d9bb82;--gold-dim:rgba(201,169,110,0.14);--gold-dim2:rgba(201,169,110,0.06);
+  --panel-bg:#ffffff;--panel-text:#111111;--panel-border:#e5e5e5;--panel-btn:#f9f9f9;
+  --cta-bg:#f4f4f4;--radius:8px;--radius-sm:5px;
+}
+
+html,body{
+  height:auto;min-height:100%;background:var(--black);
+  font-family:'DM Sans',sans-serif;color:var(--white);
+  -webkit-text-size-adjust:100%;overflow-x:hidden;
+  overflow-y:auto;
+}
+#app{
+  background:var(--app);width:100%;max-width:760px;margin:0 auto;
+  min-height:100vh;display:flex;flex-direction:column;
+  border-left:1px solid var(--border);border-right:1px solid var(--border);
+}
+
+/* ── WELCOME ── */
+.screen-welcome{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:80px 36px 100px;min-height:100vh;flex:1;
+  position:relative;overflow:hidden;
+}
+.screen-welcome::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(201,169,110,0.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+.welcome-eyebrow{color:var(--gold);letter-spacing:0.3em;font-size:11px;text-transform:uppercase;font-weight:500;margin-bottom:32px;position:relative;}
+.welcome-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,82px);font-weight:400;color:var(--white);line-height:0.95;letter-spacing:-0.01em;margin-bottom:10px;position:relative;}
+.welcome-title em{font-style:italic;color:var(--gold);}
+.welcome-rule{width:1px;height:44px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);margin:28px auto;}
+.welcome-sub{font-size:clamp(15px,2.2vw,17px);color:var(--text-body);max-width:360px;line-height:1.85;margin-bottom:52px;position:relative;}
+.btn-begin{
+  display:inline-flex;align-items:center;background:transparent;border:1px solid var(--gold);color:var(--gold);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;
+  padding:18px 52px;cursor:pointer;transition:background 0.2s,color 0.2s;-webkit-tap-highlight-color:transparent;position:relative;
+}
+.btn-begin:hover,.btn-begin:active{background:var(--gold);color:var(--black);}
+.welcome-note{font-size:13px;color:var(--text-dim);margin-top:20px;position:relative;letter-spacing:0.04em;}
+
+/* ── PROGRESS ── */
+.progress-wrap{height:1px;background:var(--border);flex-shrink:0;position:sticky;top:0;z-index:10;}
+.progress-fill{height:1px;background:var(--gold);transition:width 0.55s cubic-bezier(0.4,0,0.2,1);}
+
+/* ── CHAT HEADER ── */
+.chat-header{
+  padding:16px 22px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+  background:var(--app);position:sticky;top:1px;z-index:9;
+}
+.avatar{width:28px;height:28px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.avatar-dot{width:9px;height:9px;background:var(--gold);border-radius:50%;}
+.chat-name{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--white);}
+.prog-label{margin-left:auto;font-size:13px;color:var(--text-dim);letter-spacing:0.06em;}
+
+/* ── MESSAGES ── */
+.messages{padding:14px 22px 10px;display:flex;flex-direction:column;gap:6px;flex:0 0 auto;min-height:0;}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-bot{display:flex;gap:10px;align-items:flex-start;max-width:88%;}
+.msg-bot.new{animation:slideUp 0.3s ease forwards;}
+.bot-icon{width:22px;height:22px;border:1px solid var(--gold);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:3px;}
+.bot-dot{width:7px;height:7px;background:var(--gold);border-radius:50%;}
+.bot-bbl{background:var(--bubble);padding:12px 16px;border-radius:0 var(--radius) var(--radius) var(--radius);font-size:clamp(14px,2.3vw,15px);color:var(--text-body);line-height:1.7;}
+.msg-user{display:flex;justify-content:flex-end;}
+.msg-user.new{animation:slideUp 0.22s ease forwards;}
+.user-bbl{background:var(--user-bubble);border:1px solid var(--border-mid);padding:10px 16px;border-radius:var(--radius) 0 var(--radius) var(--radius);font-size:clamp(13px,2.2vw,14px);color:rgba(255,255,255,0.7);max-width:82%;line-height:1.6;}
+.typing-bubble{display:flex;gap:10px;align-items:flex-start;animation:slideUp 0.22s ease forwards;}
+.typing-dots{background:var(--bubble);padding:13px 17px;border-radius:0 var(--radius) var(--radius) var(--radius);display:flex;align-items:center;gap:5px;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.td{width:6px;height:6px;background:rgba(255,255,255,0.3);border-radius:50%;}
+.td1{animation:bounce 1.1s infinite 0s;}.td2{animation:bounce 1.1s infinite 0.18s;}.td3{animation:bounce 1.1s infinite 0.36s;}
+
+/* ── QUESTION PANEL ── */
+.q-panel{background:var(--panel-bg);border-top:1px solid var(--panel-border);flex-shrink:0;}
+.q-header{padding:14px 22px 0;}
+.q-text{font-size:clamp(15px,2.5vw,17px);color:var(--panel-text);line-height:1.5;font-weight:500;font-family:'DM Sans',sans-serif;}
+.q-options{padding:12px 22px 14px;display:flex;flex-wrap:wrap;gap:8px;}
+.btn-opt{
+  background:var(--panel-btn);border:1px solid #e0e0e0;color:var(--panel-text);
+  font-family:'DM Sans',sans-serif;font-size:clamp(13px,2.2vw,15px);
+  padding:11px 16px;cursor:pointer;border-radius:var(--radius-sm);
+  text-align:left;line-height:1.35;min-height:44px;
+  transition:border-color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;
+}
+.btn-opt:hover,.btn-opt:active{border-color:var(--gold);background:#fffbf5;}
+.btn-opt.selected{border-color:var(--gold);background:#fffbf5;}
+
+/* ── TAP-TO-RANK ── */
+.rank-hint{font-size:12px;color:#888;margin-top:5px;padding:0 22px;line-height:1.5;}
+.rank-opts{padding:10px 22px 4px;display:flex;flex-direction:column;gap:6px;}
+.btn-rank{
+  background:var(--panel-btn);border:1px solid #e0e0e0;color:var(--panel-text);
+  font-family:'DM Sans',sans-serif;font-size:clamp(13px,2.2vw,15px);
+  padding:11px 14px;cursor:pointer;border-radius:var(--radius-sm);
+  text-align:left;line-height:1.35;min-height:44px;
+  transition:border-color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;
+  display:flex;align-items:center;gap:10px;width:100%;
+}
+.btn-rank:hover{border-color:var(--gold);background:#fffbf5;}
+.btn-rank.ranked{border-color:var(--gold);background:#fffbf5;}
+.rank-badge{
+  width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--black);
+  font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  opacity:0;transition:opacity 0.15s;
+}
+.btn-rank.ranked .rank-badge{opacity:1;}
+.rank-label{flex:1;}
+.rank-footer{padding:10px 22px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.rank-tally{font-size:13px;color:#888;}
+.btn-rank-next{
+  background:var(--black);color:var(--white);border:none;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:0.2em;text-transform:uppercase;padding:13px 28px;
+  cursor:pointer;border-radius:var(--radius-sm);
+  transition:background 0.15s,opacity 0.15s;-webkit-tap-highlight-color:transparent;
+}
+.btn-rank-next:disabled{opacity:0.28;cursor:default;}
+.btn-rank-next:not(:disabled):hover{background:#222;}
+
+/* ── TEXT INPUT ── */
+.q-text-zone{padding:12px 22px 16px;display:flex;gap:10px;align-items:flex-end;}
+textarea{
+  flex:1;background:var(--panel-btn);border:1px solid #e0e0e0;color:var(--panel-text);
+  font-family:'DM Sans',sans-serif;font-size:clamp(14px,2.5vw,16px);
+  padding:12px 16px;border-radius:var(--radius-sm);resize:none;height:54px;
+  outline:none;line-height:1.55;-webkit-appearance:none;transition:border-color 0.15s;
+}
+textarea::placeholder{color:rgba(17,17,17,0.3);}
+textarea:focus{border-color:var(--gold);}
+.btn-send{
+  background:var(--gold);border:none;color:var(--black);
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;
+  padding:0 22px;cursor:pointer;border-radius:var(--radius-sm);height:50px;
+  flex-shrink:0;min-width:72px;-webkit-tap-highlight-color:transparent;transition:background 0.15s;
+}
+.btn-send:hover,.btn-send:active{background:var(--gold-bright);}
+
+/* ── LOADING ── */
+.loading-zone{padding:32px 22px 36px;flex-shrink:0;border-top:1px solid var(--border);}
+.loading-top{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.25}}
+.loading-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 1.4s infinite;flex-shrink:0;}
+.loading-text{font-size:16px;color:var(--text-body);}
+.loading-bar-bg{height:1px;background:var(--border);overflow:hidden;}
+@keyframes loadProgress{0%{width:0%}8%{width:12%}20%{width:28%}38%{width:46%}55%{width:62%}72%{width:74%}88%{width:82%}100%{width:86%}}
+.loading-bar-animate{height:1px;background:var(--gold);animation:loadProgress 40s ease-out forwards;}
+.loading-note{font-size:13px;color:var(--text-dim);margin-top:12px;}
+
+/* ── RESULTS ── */
+.results-wrap{flex:1;display:flex;flex-direction:column;}
+.r-header{padding:52px 28px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.r-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,169,110,0.08) 0%,transparent 70%);pointer-events:none;}
+.r-eyebrow{color:var(--gold);letter-spacing:0.3em;font-size:11px;text-transform:uppercase;font-weight:500;margin-bottom:16px;position:relative;}
+.r-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,6vw,52px);font-weight:400;color:var(--white);line-height:1.1;position:relative;}
+.r-title em{font-style:italic;color:var(--gold);}
+
+.goal-note{margin:0;padding:24px 22px;border-bottom:1px solid var(--border);background:var(--card);}
+.goal-note-inner{border-left:2px solid var(--gold);padding:14px 18px;border-radius:0 4px 4px 0;}
+.goal-note-text{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,3vw,21px);font-style:italic;color:var(--white);line-height:1.65;font-weight:400;}
+
+.recs{padding:28px 22px 16px;display:flex;flex-direction:column;gap:14px;}
+@keyframes recReveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.rec{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;opacity:0;animation:recReveal 0.5s ease forwards;}
+.rec-header{padding:22px 22px 0;display:flex;align-items:flex-start;gap:14px;}
+.rec-num{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--gold);flex-shrink:0;padding-top:5px;letter-spacing:0.1em;min-width:26px;}
+.rec-title-wrap{flex:1;}
+.rec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3.8vw,26px);color:var(--white);line-height:1.2;font-weight:400;}
+.tool-chip{
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  padding:5px 10px;border:1px solid rgba(201,169,110,0.35);border-radius:3px;
+  color:var(--gold);font-size:12px;font-family:'DM Sans',sans-serif;
+  letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;
+  background:var(--gold-dim2);transition:background 0.15s,border-color 0.15s;-webkit-tap-highlight-color:transparent;
+}
+.tool-chip:hover,.tool-chip:active{background:var(--gold-dim);border-color:var(--gold);}
+.rec-body{padding:16px 22px 18px;font-size:clamp(14px,2.3vw,15px);color:var(--text-body);line-height:1.82;}
+.rec-divider{height:1px;background:var(--border);margin:0 22px;}
+.prompts-section{padding:18px 22px 20px;}
+.prompts-eyebrow{font-size:11px;color:var(--gold);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;margin-bottom:12px;}
+.prompt-item{background:var(--black);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.prompt-item:last-child{margin-bottom:0;}
+.prompt-text{font-size:clamp(12px,1.9vw,13px);color:rgba(255,255,255,0.72);line-height:1.78;flex:1;font-family:'DM Sans',sans-serif;}
+.copy-btn{background:transparent;border:1px solid var(--border-mid);color:rgba(255,255,255,0.38);font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.06em;padding:6px 12px;cursor:pointer;border-radius:3px;flex-shrink:0;min-height:32px;transition:border-color 0.15s,color 0.15s;-webkit-tap-highlight-color:transparent;}
+.copy-btn:hover,.copy-btn:active,.copy-btn.copied{border-color:var(--gold);color:var(--gold);}
+.further-reading{padding:14px 22px 20px;border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--text-dim);line-height:1.65;}
+.further-reading a{color:var(--gold);text-decoration:none;}
+.further-reading a:hover{text-decoration:underline;}
+
+/* ── CTA ── */
+.r-cta{background:var(--cta-bg);border-top:1px solid #e5e5e5;padding:48px 28px 64px;text-align:center;}
+.r-cta-eyebrow{color:#888;letter-spacing:0.26em;font-size:11px;text-transform:uppercase;font-weight:500;margin-bottom:20px;}
+.r-cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,6vw,52px);font-weight:400;color:var(--black);line-height:1.1;margin-bottom:18px;}
+.r-cta-title em{font-style:italic;color:var(--gold);}
+.r-cta-body{font-size:clamp(15px,2.2vw,17px);color:#444;line-height:1.85;max-width:400px;margin:0 auto 36px;}
+.btn-cta-main{display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;padding:18px 48px;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;-webkit-tap-highlight-color:transparent;}
+.btn-cta-main:hover{background:#222;}
+.r-cta-divider{width:1px;height:36px;background:#ddd;margin:28px auto;}
+.btn-download{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid #ccc;color:#666;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;padding:14px 28px;cursor:pointer;border-radius:var(--radius-sm);transition:border-color 0.15s,color 0.15s;-webkit-tap-highlight-color:transparent;}
+.btn-download:hover{border-color:var(--gold);color:var(--gold);}
+.btn-restart{display:block;background:transparent;border:none;color:#bbb;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;margin:20px auto 0;cursor:pointer;padding:8px;-webkit-tap-highlight-color:transparent;transition:color 0.15s;}
+.btn-restart:hover{color:#888;}
+
+/* ── INLINE EMAIL CAPTURE (results bottom, shown only if skipped gate) ── */
+.results-email-cap{
+  background:var(--card);border-top:1px solid var(--border);
+  padding:36px 28px 44px;text-align:center;
+}
+.results-email-eyebrow{color:var(--gold);letter-spacing:0.28em;font-size:11px;text-transform:uppercase;font-weight:500;margin-bottom:14px;}
+.results-email-title{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4vw,32px);font-weight:400;color:var(--white);line-height:1.2;margin-bottom:10px;}
+.results-email-sub{font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:22px;max-width:320px;margin-left:auto;margin-right:auto;}
+.results-email-fields{display:flex;flex-direction:column;gap:8px;max-width:360px;margin:0 auto 10px;}
+.results-email-field{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border-mid);
+  color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;
+  padding:13px 16px;border-radius:var(--radius-sm);outline:none;
+  transition:border-color 0.15s;-webkit-appearance:none;
+}
+.results-email-field::placeholder{color:rgba(255,255,255,0.25);}
+.results-email-field:focus{border-color:var(--gold);}
+.btn-results-email{
+  width:100%;max-width:360px;background:var(--gold);color:var(--black);border:none;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:0.24em;text-transform:uppercase;padding:16px 24px;
+  cursor:pointer;border-radius:var(--radius-sm);margin:0 auto;display:block;
+  transition:background 0.15s,opacity 0.15s;-webkit-tap-highlight-color:transparent;
+}
+.btn-results-email:hover:not(:disabled){background:var(--gold-bright);}
+.btn-results-email:disabled{opacity:0.45;cursor:default;}
+.results-email-status{font-size:13px;color:var(--gold);margin-top:10px;min-height:18px;letter-spacing:0.04em;}
+.results-email-error{font-size:13px;color:#e07070;margin-top:8px;min-height:18px;}
+
+/* ── GATE SCREEN ── */
+.screen-gate{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;flex:1;padding:60px 36px 80px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.screen-gate::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(201,169,110,0.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+.gate-eyebrow{color:var(--gold);letter-spacing:0.3em;font-size:11px;text-transform:uppercase;font-weight:500;margin-bottom:24px;position:relative;}
+.gate-title{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,7vw,52px);font-weight:400;color:var(--white);line-height:1.1;margin-bottom:16px;position:relative;}
+.gate-title em{font-style:italic;color:var(--gold);}
+.gate-rule{width:1px;height:36px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);margin:0 auto 22px;}
+.gate-sub{font-size:clamp(14px,2vw,16px);color:var(--text-body);max-width:340px;line-height:1.8;margin-bottom:36px;position:relative;}
+.gate-form{width:100%;max-width:400px;position:relative;}
+.gate-field{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border-mid);
+  color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;
+  padding:14px 18px;border-radius:var(--radius-sm);outline:none;margin-bottom:10px;
+  transition:border-color 0.15s;-webkit-appearance:none;
+}
+.gate-field::placeholder{color:rgba(255,255,255,0.28);}
+.gate-field:focus{border-color:var(--gold);}
+.btn-gate-submit{
+  width:100%;background:var(--gold);color:var(--black);border:none;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:0.26em;text-transform:uppercase;padding:17px 24px;
+  cursor:pointer;border-radius:var(--radius-sm);margin-top:4px;
+  transition:background 0.15s,opacity 0.15s;-webkit-tap-highlight-color:transparent;
+}
+.btn-gate-submit:hover:not(:disabled){background:var(--gold-bright);}
+.btn-gate-submit:disabled{opacity:0.5;cursor:default;}
+.gate-sending{font-size:13px;color:var(--gold);margin-top:12px;min-height:20px;letter-spacing:0.04em;}
+.gate-error{font-size:13px;color:#e07070;margin-top:10px;min-height:20px;}
+.btn-gate-skip{
+  background:transparent;border:none;color:var(--text-dim);
+  font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.1em;
+  cursor:pointer;margin-top:20px;padding:6px;text-decoration:underline;
+  text-underline-offset:3px;-webkit-tap-highlight-color:transparent;
+  transition:color 0.15s;position:relative;
+}
+.btn-gate-skip:hover{color:var(--white);}
+
+/* ── MOBILE ── */
+@media(max-width:500px){
+  .screen-welcome{padding:60px 22px 80px;}
+  .welcome-title{font-size:clamp(44px,14vw,64px);}
+  .screen-gate{padding:48px 22px 60px;}
+  .q-header{padding:14px 16px 0;}
+  .rank-hint{padding:0 16px;}
+  .rank-opts{padding:10px 16px 4px;}
+  .rank-footer{padding:8px 16px 14px;}
+  .q-options{padding:10px 16px 12px;gap:7px;}
+  .btn-opt{font-size:14px;padding:12px 14px;}
+  .q-text-zone{padding:12px 16px 16px;}
+  .messages{padding:12px 16px 8px;}
+  .chat-header{padding:14px 16px 12px;}
+  .recs{padding:20px 14px 12px;gap:12px;}
+  .rec-header{padding:18px 16px 0;}
+  .rec-body{padding:13px 16px 16px;}
+  .rec-divider{margin:0 16px;}
+  .prompts-section{padding:14px 16px 18px;}
+  .further-reading{padding:12px 16px 16px;}
+  .goal-note{padding:18px 14px;}
+  .r-header{padding:40px 20px 32px;}
+  .r-cta{padding:36px 20px 52px;}
+  .results-email-cap{padding:28px 20px 36px;}
+  .prompt-item{flex-direction:column;gap:8px;}
+  .copy-btn{align-self:flex-start;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ── EMAILJS CONFIG ── swap these in once you have them from emailjs.com ── */
+const EMAILJS_PUBLIC_KEY             = 'ofaFUp6rIIXy_haFM';
+const EMAILJS_SERVICE_ID             = 'service_87bzt1g';
+const EMAILJS_TEMPLATE_TAUSHA        = 'template_b7aq29i';
+const EMAILJS_TEMPLATE_PHOTOGRAPHER  = 'template_k0cd5vk';
+
+/* ── STATE ── */
+const TOTAL_Q = 8;
+let phase='welcome',qIdx=0,msgs=[],isTyping=false,newMsgIdx=-1,answers={},rankSelections=[];
+let gateSending=false, gateEmail='';
+
+/* ── QUESTIONS ── */
+const Qs=[
+  {id:'shoot',text:"Let's start with the basics. What do you primarily shoot?",type:'btn',
+   opts:['Headshots and branding','Weddings','Families and portraits','Commercial and editorial','Events','A mix of several things']},
+  {id:'drain',text:"Outside of actually shooting, what eats your time? Tap in order, biggest drain first. You can pick up to three.",type:'rank',
+   opts:['Culling through hundreds of images','Editing and retouching','Client emails and communication','Social media and marketing','Admin, invoicing and proposals','Blogging and SEO content','Contracts and client onboarding','Pricing inquiry responses']},
+  {id:'hours',text:'About how many hours a week does that cost you?',type:'btn',
+   opts:['2 to 4 hours','5 to 8 hours','9 to 12 hours','More than 12 hours, honestly']},
+  {id:'feel',text:'And how does spending that time actually feel?',type:'btn',
+   opts:['It completely drains me','It is a necessary evil but I manage','It stresses me out and I fall behind','I actually do not mind it that much']},
+  {id:'stage',text:'Where are you in your photography business right now?',type:'btn',
+   opts:['Just getting started, under 2 years in','Growing and finding my footing','Established but feeling stuck or plateaued','Thriving and looking to scale']},
+  {id:'goal',text:'What is your biggest goal for your business in the next 6 months?',type:'btn',
+   opts:['Book more clients','Raise my prices and work less','Work fewer hours overall','Build passive income or an education side','Get better at the craft','A mix of a few of these']},
+  {id:'tools',text:'Are you using any AI tools right now? Even a little? No judgment.',type:'txt',
+   ph:'ChatGPT for captions, Aftershoot for culling, nothing yet...'},
+  {id:'dream',text:"Last one. If you got those hours back every week, what would you actually do with them?",type:'txt',
+   ph:'Shoot more personal work, rest, take on more clients, travel...'}
+];
+
+/* ── DRAIN → REC LIBRARY ── */
+const DRAIN_RECS={
+  'Culling through hundreds of images':{
+    title:'Let AI cull so you never have to again',
+    tool:'Aftershoot',tool_url:'https://aftershoot.com',
+    suggestion:'Culling is the definition of high-effort, low-skill work, and it is the first thing AI does better than humans at scale. Aftershoot learns your selection style over time and gets more accurate the more you use it. Photographers who switch typically recover 3 to 5 hours a week on this alone.',
+    prompts:[
+      'I am a [your shoot type] photographer who shoots around [number] images per session. I want to set up Aftershoot to cull in my style. Walk me through how to train it on my selects, what settings to configure first, and how long it typically takes before the results feel accurate to me.',
+      'I just started using Aftershoot and my culls are not quite matching my style yet. Here is what I am noticing: [describe the problem, for example too many selects, missing my best expressions, keeping eyes that are not sharp enough]. Help me figure out which settings or training adjustments will fix this.',
+      'Help me build a post-shoot workflow that puts Aftershoot at the front so I am not touching a single image before it has already culled the session. Walk me through the order of steps from card to delivery-ready selects.'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/80-20-rule-for-photographers',title:'The 80/20 Rule for Photographers'}]
+  },
+  'Editing and retouching':{
+    title:'Cut your retouching time with AI skin tools',
+    tool:'Evoto',tool_url:'https://www.evoto.ai',
+    suggestion:'Evoto is purpose-built for portrait retouching and handles skin in seconds at a level that used to take serious manual work. It is not a filter: it reads the face and makes targeted adjustments. Pair it with Lightroom AI masking for background and clothing edits and you have a full AI-assisted editing stack without changing the tools you already use.',
+    prompts:[
+      'I am a [your shoot type] photographer. I want to build a retouching workflow that uses Evoto for skin and Lightroom AI masking for everything else. Walk me through the order of operations and what each tool should handle so I am not duplicating effort or switching back and forth unnecessarily.',
+      'I use Lightroom Classic for editing. Walk me through the AI masking tools I should be using for [your shoot type] to speed up my workflow. Focus on Subject Selection, Background Removal, and Luminance Range masks. Tell me when to use each one and what they save the most time on.',
+      'Help me figure out what I am still doing manually in my edit that AI tools could handle. Here is my current workflow step by step: [describe it]. Tell me where the biggest time savings are and which tool handles each one.'
+    ],
+    blog_posts:[]
+  },
+  'Client emails and communication':{
+    title:'Template your emails without losing your voice',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Your inquiry responses, gallery delivery emails, and follow-up sequences can all be templated with AI and personalized in about 60 seconds per client. The key is having a brand voice document so the AI writes in your tone, not generic template-speak. Claude is what Tausha personally uses for this. These prompts work in any AI tool you prefer.',
+    prompts:[
+      'I am a [your shoot type] photographer. A new client just emailed asking about a session. They mentioned [what they said in their message]. Write a warm, direct reply that acknowledges what they said, asks one specific question before our call, and ends with a clear next step. Keep it under 150 words and do not make it sound like a template.',
+      'I need a gallery delivery email for a [your shoot type] client. I want it to feel personal, not like an automated confirmation. Reference [one specific thing you loved about their session] and include a soft ask for a Google review at the end. My tone is [describe it: warm and direct, casual, professional but friendly].',
+      'Write a follow-up email for a lead who went quiet after my initial response. Keep it brief, give them an easy out, and make it feel like a genuine check-in rather than a chase. No pressure and no desperation. My shoot type is [your shoot type].'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/how-to-use-crm-photographer',title:'How to Use a CRM as a Photographer'}]
+  },
+  'Social media and marketing':{
+    title:'Batch a full week of content in one hour',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Writing captions after a long shoot day is how content never gets posted. The fix is batching: one hour a week, brand voice document open, a few session notes, and your AI writes the whole week in one sitting. You review, tweak, and schedule. These prompts work in ChatGPT or any AI tool you prefer.',
+    prompts:[
+      'I am a [your shoot type] photographer. Here is my brand voice document: [paste it here]. Write five Instagram captions for this week: one that shares a client result, one educational tip about [your niche], one behind-the-scenes moment, one that shows my personality or values, and one that drives to my booking link. Make each one feel like me, not like an AI wrote it.',
+      'Here are three sessions I shot this week: [brief description of each one, what made them interesting or memorable]. Using my brand voice below, write one caption per session that is specific to what happened, not generic. Brand voice: [paste here].',
+      'I want to create 30 days of content themes for a [your shoot type] photographer so I never stare at a blank caption box again. Give me a repeating weekly structure with 5 content pillars, a description of what each one covers, and two example post ideas for each pillar.'
+    ],
+    blog_posts:[]
+  },
+  'Admin, invoicing and proposals':{
+    title:'Automate your admin with smarter workflows',
+    tool:'Dubsado',tool_url:'https://www.dubsado.com',
+    suggestion:'Admin tasks feel urgent but are almost entirely automatable. Dubsado handles proposals, contracts, invoices, and follow-up reminders in one place and you build the workflow once. AI can help you write the copy inside those workflows so your automations still sound like you, not a form letter.',
+    prompts:[
+      'I am a [your shoot type] photographer using Dubsado. I want to build an automated workflow that handles everything from inquiry to signed contract without me manually chasing each step. Walk me through what the workflow should include, in what order, and what I should automate versus keep personal.',
+      'Write a proposal introduction paragraph for a [your shoot type] inquiry. The client is [brief description: a corporate team, a personal brand founder, etc.]. Make it feel custom to them, confident about what I offer, and end with a clear next step. Keep it under 120 words.',
+      'Write a friendly but firm follow-up message for a client who received their proposal 5 days ago and has not responded. My tone is direct and warm, not corporate. Give me two versions: one that assumes they got busy and one that gently checks if they have questions.'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/how-to-use-crm-photographer',title:'How to Use a CRM as a Photographer'}]
+  },
+  'Blogging and SEO content':{
+    title:'Use AI to outline and draft your blog posts',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Blogging is one of the highest-ROI things a photographer can do for long-term visibility, and also one of the most time-consuming to sit down and start. AI can handle the outline, the draft, and the SEO structure while you bring the real stories and behind-the-scenes detail only you have. These prompts work in any AI tool you prefer.',
+    prompts:[
+      'I am a [your shoot type] photographer based in [your city]. I want to write a blog post about [topic or recent session]. Give me a complete SEO-optimized outline: a working title, a meta description under 155 characters, H2 and H3 structure, and a one-sentence note on what to cover in each section. Target keyword: [keyword].',
+      'Here is my blog post outline: [paste it]. Here are the behind-the-scenes details, gear, and story from the session: [paste your notes]. Write a full draft in my voice. Keep it conversational, skip the filler, and make sure the intro answers the core question within the first two paragraphs. My brand voice: [paste or describe it].',
+      'I want a list of 12 blog post ideas for a [your shoot type] photographer that will actually rank and bring in the right clients. Focus on topics my ideal clients are already searching for, not topics only other photographers care about. Include a working title and target keyword for each one.'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/80-20-rule-for-photographers',title:'The 80/20 Rule for Photographers'}]
+  },
+  'Contracts and client onboarding':{
+    title:'Streamline onboarding with automated workflows',
+    tool:'Dubsado',tool_url:'https://www.dubsado.com',
+    suggestion:'Every new client going through the same manual steps is a system problem, not a time management problem. Dubsado automates contract delivery, payment collection, and onboarding questionnaires so new clients move through the process without you touching it. AI can help you write clearer, friendlier contract language while you are at it.',
+    prompts:[
+      'I am a [your shoot type] photographer. I want to rewrite my contract language so it protects me legally but still sounds like a human wrote it. Here is the clause I want to improve: [paste the clause]. Rewrite it to be clear, direct, and professional without being cold or confusing for the client.',
+      'Write a client welcome email that goes out automatically after a contract is signed. It should confirm what they booked, set clear expectations for next steps, and make them feel excited rather than just processed. My shoot type is [your shoot type] and my tone is [describe it].',
+      'Help me map out what my onboarding automation should include from signed contract to day of shoot. I am a [your shoot type] photographer. List every touchpoint the client should receive, in order, with a note on whether each one should be automated or kept personal.'
+    ],
+    blog_posts:[]
+  },
+  'Pricing inquiry responses':{
+    title:'Handle pricing questions without losing the lead',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Pricing inquiries are the highest-stakes emails in your inbox and the most templatable. A well-crafted AI-assisted response can handle the most common objections, guide the client toward booking, and still feel completely personal to them. These prompts work in any AI tool you prefer, including ChatGPT.',
+    prompts:[
+      'I am a [your shoot type] photographer. A potential client just emailed asking how much I charge. They said: [paste their message]. Write a warm, confident reply that shares enough information to move them forward without giving a full price list. End with a clear next step and one question that helps me understand their situation better.',
+      'Write a response to a client who said my prices are higher than they expected. My rate for [your session type] is [your price]. Do not apologize or discount. Help me explain the value in a way that is confident but not defensive, and give them a clear path to book if it is the right fit.',
+      'I get inquiries that ask for pricing but never respond after I send it. Write a follow-up email for someone who asked about pricing 4 days ago and went quiet. Keep it short, warm, and give them an easy way to either move forward or tell me the timing is not right.'
+    ],
+    blog_posts:[]
+  }
+};
+
+/* ── REC 01: always brand voice ── */
+const REC_BRAND_VOICE={
+  title:'Build your brand voice document first',
+  tool:'Claude',tool_url:'https://claude.ai',
+  suggestion:'This is the move that makes every other AI tool actually sound like you. When your AI knows your voice, your ideal client, your tone, and what you would never say, everything else gets faster and better. It is the foundation every recommendation here builds on. These prompts work in any AI tool you prefer.',
+  prompts:[
+    'I want you to build my brand voice document. Interview me one question at a time and wait for my full answer before asking the next. Start with who my ideal client is, then cover my tone, what I would never want to sound like, and what makes my work different from other photographers.',
+    'Here is my brand voice document: [paste it here]. Write three Instagram captions for a recent [your shoot type] session. Keep them specific to my voice and avoid anything that sounds generic or like an AI wrote it.',
+    'Here is my brand voice document: [paste it here]. Please save this to your memory so you always write in my voice without me pasting it every time. Confirm once it is saved and tell me how to update it if my brand evolves.'
+  ],
+  blog_posts:[]
+};
+
+/* ── REC 05: stage-driven ── */
+const STAGE_RECS={
+  'Just getting started, under 2 years in':{
+    title:'Build your systems before you need them',
+    tool:'Dubsado',tool_url:'https://www.dubsado.com',
+    suggestion:'The photographers who avoid burnout are the ones who build their workflows before things get busy, not after. Starting now with automated proposals, contracts, and onboarding means every new client gets a consistent, professional experience and you never scramble to keep up. AI can help you write all the copy for it.',
+    prompts:[
+      'I am a newer [your shoot type] photographer building my business systems from scratch. Help me figure out what I actually need in place right now versus what can wait. Give me the 5 most important workflows to automate in my first year and why each one matters.',
+      'Write a short, confident About section for a newer [your shoot type] photographer who does not have years of experience to lean on yet. Focus on what makes my work and approach different, not on how long I have been doing this. My tone is [describe it] and I specialize in [describe your niche or style].',
+      'I am still figuring out my pricing as a newer photographer. Help me present my pricing in a way that feels confident and clear, not apologetic. My current rate for [session type] is [rate]. What language should I use and what should I avoid?'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/5-mistakes-your-making-in-your-photography-business-what-you-can-do-to-fix-them',title:'5 Mistakes Photographers Make in Their Business'}]
+  },
+  'Growing and finding my footing':{
+    title:'Use AI to sharpen what is already working',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Growing photographers do not need more tools, they need to get more out of what is already working. AI can help you refine your inquiry responses, tighten your pricing language, and build the content that brings the right clients to you before they ever have to ask what you charge. These prompts work in any AI tool you prefer.',
+    prompts:[
+      'I am a [your shoot type] photographer who is growing but wants to attract higher-budget clients. Review my current website copy: [paste a section]. Tell me specifically what signals expertise and what undercuts it. Give me a rewrite of the weakest section.',
+      'I want to raise my prices for [session type] from [current rate] to [new rate]. Help me write a transition message I can send to past clients and update on my website that feels confident and does not over-explain.',
+      'Help me identify the content gap between where I am now and the clients I want to attract. I am a [your shoot type] photographer targeting [describe your ideal client]. What are the 5 blog or social content topics that would most directly bring that client to me?'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/stop-the-hustle-start-the-flow-how-photographers-can-work-smarter-and-earn-more',title:'Stop the Hustle, Start the Flow'}]
+  },
+  'Established but feeling stuck or plateaued':{
+    title:'Audit what is holding you back and change it',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Plateau usually means something in the business is misaligned: pricing, positioning, the wrong client mix, or systems built for a smaller version of the business. AI is surprisingly good at helping you see that clearly and figure out what to actually change. These prompts work in any AI tool you prefer.',
+    prompts:[
+      'I am an established [your shoot type] photographer who feels stuck. Here is an honest look at my business right now: [describe your volume, pricing, client mix, what you love and what drains you]. Help me identify the most likely root cause of the plateau and give me 3 specific things I could change or test in the next 60 days.',
+      'I want to reposition my photography business to attract [describe your ideal new client] instead of [describe who you are currently attracting]. Review my current positioning or bio: [paste it]. Tell me exactly what needs to change and rewrite it for the new direction.',
+      'Help me think through whether I should raise my prices, niche down, add a new service, or focus on marketing. I am a [your shoot type] photographer. Here is what my business looks like right now: [volume, revenue range, what you enjoy]. Give me a clear recommendation with your reasoning.'
+    ],
+    blog_posts:[{url:'https://www.taushadickinson.com/blog/stop-the-hustle-start-the-flow-how-photographers-can-work-smarter-and-earn-more',title:'Stop the Hustle, Start the Flow'}]
+  },
+  'Thriving and looking to scale':{
+    title:'Scale your business without scaling your hours',
+    tool:'Claude',tool_url:'https://claude.ai',
+    suggestion:'Scaling without adding hours means building systems that do the work of a second version of you. AI handles content, communication, and business thinking so you can stay focused on the creative and client work only you can do. These prompts work in any AI tool you prefer.',
+    prompts:[
+      'I am a thriving [your shoot type] photographer looking to add [education, licensing, workshops, or a second shooter program] as a revenue stream without it taking over my time. Help me map out what that looks like: what I would offer, how I would price it, and what I would need to build first.',
+      'I want to build a content engine that markets my photography business consistently without me writing everything from scratch. Help me design a system using AI where I spend no more than 90 minutes a week on content. Walk me through the workflow from session to published post or caption.',
+      'Help me write a licensing pitch for my existing photography work. I shoot [your shoot type] and have a library of images that could be used by [brands, publications, etc.]. Write an outreach email that is confident, specific about what I am offering, and easy for them to say yes to.'
+    ],
+    blog_posts:[]
+  }
+};
+
+/* ── BUILD RECS ── */
+function buildRecs(){
+  const rawDrains = answers.drain || '';
+  const drains = rawDrains.split(', ').map(d=>d.replace(/^#\d+:\s*/,'')).filter(Boolean);
+  const stage = answers.stage || 'Growing and finding my footing';
+  const fallbackDrains = ['Client emails and communication','Social media and marketing','Admin, invoicing and proposals'];
+  const r2 = DRAIN_RECS[drains[0]] || DRAIN_RECS[fallbackDrains[0]];
+  const r3 = DRAIN_RECS[drains[1]] || DRAIN_RECS[fallbackDrains[1]];
+  const r4 = DRAIN_RECS[drains[2]] || DRAIN_RECS[fallbackDrains[2]];
+  const r5 = STAGE_RECS[stage] || STAGE_RECS['Growing and finding my footing'];
+  return [REC_BRAND_VOICE, r2, r3, r4, r5];
+}
+
+/* ── HELPERS ── */
+function el(id){return document.getElementById(id);}
+function scrollToBottom(){setTimeout(()=>{window.scrollTo(0,document.body.scrollHeight);},80);}
+
+function copyPrompt(btn){
+  const item=btn.closest('.prompt-item');
+  const text=item.querySelector('.prompt-text').textContent||'';
+  const finish=()=>{btn.textContent='Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2200);};
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:0;left:0;opacity:0;pointer-events:none;';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');finish();}catch(e){btn.textContent='Select + copy';}document.body.removeChild(ta);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(finish).catch(fallback);}else{fallback();}
+}
+
+/* ── RENDER ── */
+function render(){
+  const app=el('app');if(!app)return;
+  if(phase==='welcome'){app.innerHTML=screenWelcome();}
+  else if(phase==='chat'){
+    app.innerHTML=screenChat();
+    if(!isTyping&&qIdx<Qs.length&&Qs[qIdx].type==='txt'){setTimeout(()=>{const t=el('ainput');if(t)t.focus();},80);}
+    scrollToBottom();
+  }
+  else if(phase==='loading'){app.innerHTML=screenLoading();setTimeout(()=>{phase='gate';render();},3600);}
+  else if(phase==='gate'){app.innerHTML=screenGate();setTimeout(()=>{const f=el('gate-name');if(f)f.focus();},80);}
+  else{app.innerHTML=screenResults();setTimeout(()=>{window.scrollTo(0,0);},30);}
+}
+
+/* ── WELCOME ── */
+function screenWelcome(){return`
+  <div class="screen-welcome">
+    <div class="welcome-eyebrow">For Photographers</div>
+    <h1 class="welcome-title">The <em>AI</em><br>Time Audit</h1>
+    <div class="welcome-rule"></div>
+    <p class="welcome-sub">Eight honest questions. Five specific, personalized ways AI can give you your time back without losing what makes your work <em>yours</em>.</p>
+    <button class="btn-begin" onclick="startChat()">Begin the Audit</button>
+    <p class="welcome-note">Takes about 3 minutes</p>
+  </div>`;}
+
+/* ── GATE SCREEN ── */
+function screenGate(){return`
+  <div class="screen-gate">
+    <div class="gate-eyebrow">Almost there</div>
+    <h2 class="gate-title">Get your results<br>sent to <em>your inbox</em></h2>
+    <div class="gate-rule"></div>
+    <p class="gate-sub">Drop your email and we will send you a copy of your personalized recommendations to keep. No spam. No sequences. Just your results.</p>
+    <div class="gate-form">
+      <input id="gate-name" class="gate-field" type="text" placeholder="First name" autocomplete="given-name">
+      <input id="gate-email" class="gate-field" type="email" placeholder="Email address" autocomplete="email">
+      <button class="btn-gate-submit" id="gate-submit" onclick="submitGate()">Send me my results</button>
+      <p class="gate-sending" id="gate-sending"></p>
+      <p class="gate-error" id="gate-error"></p>
+    </div>
+    <button class="btn-gate-skip" onclick="skipGate()">Skip, just show me my results</button>
+  </div>`;}
+
+/* ── GATE: submit with email ── */
+async function submitGate(){
+  const name  = (el('gate-name')?.value||'').trim();
+  const email = (el('gate-email')?.value||'').trim();
+  if(!email){
+    const err=el('gate-error');
+    if(err){err.textContent='Please enter your email address.';}
+    return;
+  }
+  const btn=el('gate-submit');
+  const sending=el('gate-sending');
+  const errEl=el('gate-error');
+  if(btn){btn.disabled=true;}
+  if(sending){sending.textContent='Sending your results...';}
+  if(errEl){errEl.textContent='';}
+  gateSending=true;
+
+  try{
+    const recs = buildRecs();
+    const recSummary = recs.map((r,i)=>`0${i+1}. ${r.title} (${r.tool||'No tool'})`).join('\n');
+    const recsFull = recs.map((r,i)=>{
+      const prompts=(r.prompts||[]).map((p,pi)=>`Prompt ${pi+1}: ${p}`).join('\n\n');
+      const blogs=(r.blog_posts||[]).map(b=>b.title).join(', ')||'None';
+      return `REC 0${i+1}: ${r.title}\nTool: ${r.tool||'None'}\n\n${r.suggestion}\n\nPrompts:\n${prompts}\n\nFurther reading: ${blogs}`;
+    }).join('\n\n---\n\n');
+
+    // Template params for Tausha's copy — structured for Claude analysis
+    const taushаParams = {
+      to_email: 'info@taushadickinson.com',
+      name: name || 'Not provided',
+      photographer_name: name || 'Not provided',
+      photographer_email: email,
+      submitted_at: new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}),
+      q1_shoot: answers.shoot||'',
+      q2_drain: answers.drain||'',
+      q3_hours: answers.hours||'',
+      q4_feel: answers.feel||'',
+      q5_stage: answers.stage||'',
+      q6_goal: answers.goal||'',
+      q7_tools: answers.tools||'',
+      q8_dream: answers.dream||'',
+      recs_summary: recSummary,
+      recs_full: recsFull
+    };
+
+    // Template params for photographer's copy — formatted results
+    const photographerParams = {
+      to_email: email,
+      to_name: name || 'Photographer',
+      name: name || 'Photographer',
+      q1_shoot: answers.shoot||'Not provided',
+      q2_drain: answers.drain||'Not provided',
+      q8_dream: answers.dream||'Not provided',
+      recs_full: recsFull,
+      closing_note: answers.dream
+        ? `You said you want to ${answers.dream.charAt(0).toLowerCase()+answers.dream.slice(1).replace(/\.+$/,'')}. Every recommendation here is built to buy back the hours keeping you from it.`
+        : ''
+    };
+
+    // Send both independently so one failure doesn't kill the other
+    const taushaSend = ejsSend(EMAILJS_TEMPLATE_TAUSHA, taushаParams)
+      .catch(err=>console.warn('Tausha copy failed:',err.message));
+    const photogSend = ejsSend(EMAILJS_TEMPLATE_PHOTOGRAPHER, photographerParams)
+      .catch(err=>{ throw err; });
+    await Promise.all([taushaSend, photogSend]);
+
+    if(sending){sending.textContent='Sent! Check your inbox.';}
+    gateEmail = email;
+    setTimeout(()=>{ phase='results'; render(); }, 1200);
+
+  }catch(err){
+    console.error('EmailJS error full:', JSON.stringify(err), err.text, err.status);
+    if(errEl){errEl.textContent='Something went wrong sending the email. Showing your results now.';}
+    if(btn){btn.disabled=false;}
+    if(sending){sending.textContent='';}
+    setTimeout(()=>{ phase='results'; render(); }, 2000);
+  }
+  gateSending=false;
+}
+
+/* ── GATE: skip ── */
+function skipGate(){
+  phase='results';
+  render();
+}
+function screenChat(){
+  const prog=Math.min(qIdx,TOTAL_Q),pct=(prog/TOTAL_Q)*100;
+  const historyHTML=msgs.map((m,i)=>{
+    const isNew=(i===newMsgIdx||i===newMsgIdx+1);
+    if(m.role==='bot')return`<div class="msg-bot${isNew?' new':''}"><div class="bot-icon"><div class="bot-dot"></div></div><div class="bot-bbl">${m.content}</div></div>`;
+    return`<div class="msg-user${isNew?' new':''}"><div class="user-bbl">${m.content}</div></div>`;
+  }).join('');
+  const typingHTML=isTyping?`<div class="typing-bubble"><div class="bot-icon"><div class="bot-dot"></div></div><div class="typing-dots"><div class="td td1"></div><div class="td td2"></div><div class="td td3"></div></div></div>`:'';
+  let panel='';
+  if(!isTyping&&qIdx<Qs.length){
+    const q=Qs[qIdx];
+    if(q.type==='btn'){
+      panel=`<div class="q-panel"><div class="q-header"><p class="q-text">${q.text}</p></div><div class="q-options">${q.opts.map(o=>`<button class="btn-opt" onclick="answerBtn(this)" data-v="${o.replace(/"/g,'&quot;')}">${o}</button>`).join('')}</div></div>`;
+    }else if(q.type==='rank'){
+      panel=buildRankPanel(q);
+    }else{
+      panel=`<div class="q-panel"><div class="q-header"><p class="q-text">${q.text}</p></div><div class="q-text-zone"><textarea id="ainput" placeholder="${q.ph}" onkeydown="handleKey(event)" rows="2"></textarea><button class="btn-send" onclick="submitText()">Send</button></div></div>`;
+    }
+  }
+  return`
+    <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="chat-header"><div class="avatar"><div class="avatar-dot"></div></div><span class="chat-name">AI Time Audit</span><span class="prog-label">${prog} of ${TOTAL_Q}</span></div>
+    <div id="msgs" class="messages">${historyHTML}${typingHTML}</div>
+    ${panel}`;}
+
+/* ── RANK PANEL ── */
+function buildRankPanel(q){
+  const optsHTML=q.opts.map(opt=>{
+    const ri=rankSelections.indexOf(opt);
+    const ranked=ri!==-1;
+    return`<button class="btn-rank${ranked?' ranked':''}" onclick="toggleRank(this)" data-v="${opt.replace(/"/g,'&quot;')}"><span class="rank-badge">${ranked?ri+1:''}</span><span class="rank-label">${opt}</span></button>`;
+  }).join('');
+  const count=rankSelections.length;
+  const tally=count===0?'None selected yet':count===1?'1 selected':`${count} selected`;
+  return`<div class="q-panel"><div class="q-header"><p class="q-text">${q.text}</p></div><p class="rank-hint">Tap your biggest drain first. Pick up to 3, or just 1 if that is your answer.</p><div class="rank-opts">${optsHTML}</div><div class="rank-footer"><span class="rank-tally">${tally}</span><button class="btn-rank-next" onclick="submitRank()"${count===0?' disabled':''}>Next</button></div></div>`;}
+
+function toggleRank(btn){
+  const val=btn.dataset.v;
+  const idx=rankSelections.indexOf(val);
+  if(idx!==-1){rankSelections.splice(idx,1);}
+  else{if(rankSelections.length>=3)return;rankSelections.push(val);}
+  const q=Qs[qIdx];
+  const app=el('app');
+  const existing=app.querySelector('.q-panel');
+  if(existing){const tmp=document.createElement('div');tmp.innerHTML=buildRankPanel(q);existing.replaceWith(tmp.firstElementChild);}
+}
+
+function submitRank(){
+  if(rankSelections.length===0)return;
+  const answer=rankSelections.map((s,i)=>`#${i+1}: ${s}`).join(', ');
+  rankSelections=[];
+  processAnswer(answer);
+}
+
+/* ── LOADING ── */
+function screenLoading(){
+  const h=msgs.map(m=>m.role==='bot'?`<div class="msg-bot"><div class="bot-icon"><div class="bot-dot"></div></div><div class="bot-bbl">${m.content}</div></div>`:`<div class="msg-user"><div class="user-bbl">${m.content}</div></div>`).join('');
+  return`<div class="progress-wrap"><div class="progress-fill" style="width:100%"></div></div><div class="chat-header"><div class="avatar"><div class="avatar-dot"></div></div><span class="chat-name">AI Time Audit</span><span class="prog-label">8 of 8</span></div><div id="msgs" class="messages">${h}</div><div class="loading-zone"><div class="loading-top"><span class="loading-dot"></span><span class="loading-text">Pulling your personalized recommendations together...</span></div><div class="loading-bar-bg"><div class="loading-bar-animate"></div></div><p class="loading-note">This usually takes about 30 to 45 seconds. Worth the wait.</p></div>`;}
+
+/* ── RESULTS ── */
+function screenResults(){
+  const recs=buildRecs();
+  const dream=answers.dream||'';
+  const closingText=dream?`You said you want to ${dream.charAt(0).toLowerCase()+dream.slice(1).replace(/\.+$/,'')}. Every recommendation here is built to buy back the hours keeping you from it.`:'';
+  const goalNoteHTML=closingText?`<div class="goal-note"><div class="goal-note-inner"><p class="goal-note-text">${closingText}</p></div></div>`:'';
+  const recsHTML=recs.map((r,i)=>{
+    const toolHTML=(r.tool&&r.tool_url)?`<a href="${r.tool_url}" target="_blank" class="tool-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>${r.tool}</a>`:'';
+    const promptsHTML=(r.prompts||[]).map(p=>`<div class="prompt-item"><p class="prompt-text">${p}</p><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>`).join('');
+    const blogLinks=(r.blog_posts||[]).filter(b=>b&&b.url&&b.title).map(b=>`<a href="${b.url}" target="_blank">${b.title} &rarr;</a>`).join(' &nbsp;&middot;&nbsp; ');
+    const furtherHTML=blogLinks?`<div class="further-reading"><span>Further reading:</span> ${blogLinks}</div>`:'';
+    return`<div class="rec" style="animation-delay:${i*110}ms"><div class="rec-header"><span class="rec-num">0${i+1}</span><div class="rec-title-wrap"><div class="rec-title">${r.title}</div>${toolHTML}</div></div><div class="rec-body">${r.suggestion}</div>${promptsHTML?`<div class="rec-divider"></div><div class="prompts-section"><div class="prompts-eyebrow">Ready-to-use prompts</div>${promptsHTML}</div>`:''}${furtherHTML}</div>`;
+  }).join('');
+
+  // Only show inline email capture if they skipped the gate
+  const inlineEmailHTML = !gateEmail ? `
+    <div class="results-email-cap">
+      <div class="results-email-eyebrow">Keep your results</div>
+      <h3 class="results-email-title">Send these to your inbox</h3>
+      <p class="results-email-sub">Drop your email and we will send you a copy to reference whenever you are ready to dig in.</p>
+      <div class="results-email-fields">
+        <input id="re-name" class="results-email-field" type="text" placeholder="First name" autocomplete="given-name">
+        <input id="re-email" class="results-email-field" type="email" placeholder="Email address" autocomplete="email">
+      </div>
+      <button class="btn-results-email" id="re-submit" onclick="submitResultsEmail()">Send me my results</button>
+      <p class="results-email-status" id="re-status"></p>
+      <p class="results-email-error" id="re-error"></p>
+    </div>` : '';
+
+  return`<div class="results-wrap">
+    <div class="r-header"><div class="r-eyebrow">Your Results</div><h2 class="r-title">Here is exactly<br>where to <em>start</em></h2></div>
+    ${goalNoteHTML}
+    <div class="recs">${recsHTML}</div>
+    ${inlineEmailHTML}
+    <div class="r-cta">
+      <div class="r-cta-eyebrow">Ready to go deeper?</div>
+      <h3 class="r-cta-title">Work smarter.<br><em>Shoot more.</em></h3>
+      <p class="r-cta-body">In private mentoring, we work through business strategy, lighting, workflow, and time management. Every session is built around where you actually are and what will move the needle fastest.</p>
+      <a href="https://www.taushadickinson.com/workshops" target="_blank" class="btn-cta-main">Explore Mentoring</a>
+      <div class="r-cta-divider"></div>
+      <button class="btn-restart" onclick="startChat()">Start the audit over</button>
+    </div>
+  </div>`;}
+
+/* ── INLINE EMAIL SUBMIT (results bottom) ── */
+async function submitResultsEmail(){
+  const name  = (el('re-name')?.value||'').trim();
+  const email = (el('re-email')?.value||'').trim();
+  const errEl = el('re-error');
+  const status= el('re-status');
+  const btn   = el('re-submit');
+  if(!email){ if(errEl) errEl.textContent='Please enter your email address.'; return; }
+  if(btn) btn.disabled=true;
+  if(status) status.textContent='Sending...';
+  if(errEl) errEl.textContent='';
+  try{
+    const recs=buildRecs();
+    const recSummary=recs.map((r,i)=>`0${i+1}. ${r.title} (${r.tool||'No tool'})`).join('\n');
+    const recsFull=recs.map((r,i)=>{
+      const prompts=(r.prompts||[]).map((p,pi)=>`Prompt ${pi+1}: ${p}`).join('\n\n');
+      const blogs=(r.blog_posts||[]).map(b=>b.title).join(', ')||'None';
+      return `REC 0${i+1}: ${r.title}\nTool: ${r.tool||'None'}\n\n${r.suggestion}\n\nPrompts:\n${prompts}\n\nFurther reading: ${blogs}`;
+    }).join('\n\n---\n\n');
+    const taushaSend2 = ejsSend(EMAILJS_TEMPLATE_TAUSHA, {
+        to_email:'info@taushadickinson.com',
+        name: name||'Not provided',
+        photographer_name:name||'Not provided',
+        photographer_email:email,
+        submitted_at:new Date().toLocaleString('en-US',{timeZone:'America/Chicago'})+' (via results page)',
+        q1_shoot:answers.shoot||'',q2_drain:answers.drain||'',q3_hours:answers.hours||'',
+        q4_feel:answers.feel||'',q5_stage:answers.stage||'',q6_goal:answers.goal||'',
+        q7_tools:answers.tools||'',q8_dream:answers.dream||'',
+        recs_summary:recSummary,recs_full:recsFull
+      }).catch(err=>console.warn('Tausha copy failed:',err.message));
+    const photogSend2 = ejsSend(EMAILJS_TEMPLATE_PHOTOGRAPHER, {
+        to_email:email,
+        to_name:name||'Photographer',
+        name:name||'Photographer',
+        q1_shoot:answers.shoot||'Not provided',q2_drain:answers.drain||'Not provided',q8_dream:answers.dream||'Not provided',
+        recs_full:recsFull,
+        closing_note:answers.dream?`You said you want to ${answers.dream.charAt(0).toLowerCase()+answers.dream.slice(1).replace(/\.+$/,'')}. Every recommendation here is built to buy back the hours keeping you from it.`:''
+      }).catch(err=>{ throw err; });
+    await Promise.all([taushaSend2, photogSend2]);
+    gateEmail=email;
+    if(status) status.textContent='Sent! Check your inbox.';
+    if(btn) btn.textContent='Sent';
+  }catch(err){
+    console.error(err);
+    if(errEl) errEl.textContent='Something went wrong. Try again in a moment.';
+    if(btn) btn.disabled=false;
+    if(status) status.textContent='';
+  }
+}
+
+/* ── INTERACTION ── */
+function startChat(){phase='chat';msgs=[];qIdx=0;isTyping=false;newMsgIdx=-1;answers={};rankSelections=[];gateSending=false;gateEmail='';render();}
+
+function answerBtn(btn){
+  btn.classList.add('selected');
+  document.querySelectorAll('.btn-opt').forEach(b=>{b.style.pointerEvents='none';b.style.opacity=(b===btn)?'1':'0.3';});
+  setTimeout(()=>processAnswer(btn.dataset.v),240);
+}
+
+function processAnswer(a){
+  answers[Qs[qIdx].id]=a;
+  newMsgIdx=msgs.length;
+  msgs.push({role:'bot',content:Qs[qIdx].text});
+  msgs.push({role:'user',content:a});
+  qIdx++;isTyping=true;render();scrollToBottom();
+  setTimeout(()=>{isTyping=false;if(qIdx<Qs.length){render();scrollToBottom();}else{phase='loading';render();}},620);
+}
+
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitText();}}
+function submitText(){const t=el('ainput');if(!t||!t.value.trim())return;processAnswer(t.value.trim());}
+
+/* ── Boot ── */
+render();
+
+// Tell parent iframe to resize — works with Squarespace embed blocks
+function reportHeight(){
+  const h = document.body.scrollHeight;
+  window.parent.postMessage({type:'resize',height:h},'*');
+}
+// Report on load and whenever content changes
+const resizeObs = new ResizeObserver(()=>reportHeight());
+resizeObs.observe(document.body);
+reportHeight();
+
+async function ejsSend(templateId, params){
+  const res = await fetch('https://api.emailjs.com/api/v1.0/email/send',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: templateId,
+      user_id: EMAILJS_PUBLIC_KEY,
+      template_params: params
+    })
+  });
+  if(!res.ok){
+    const txt = await res.text();
+    throw new Error(`${res.status}: ${txt}`);
+  }
+  return res;
+}
+</script>
+</body>
+</html>
